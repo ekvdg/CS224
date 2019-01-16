@@ -1,0 +1,48 @@
+                            | #Ellie Van De Graaff, ellievdg
+0x000:                      | .pos 0
+0x000: 30f40002000000000000 | irmovq stack, %rsp
+0x00a: 804800000000000000   | call main
+0x013: 00                   | halt
+                            | 
+0x018:                      | .align 8
+0x018:                      | stc:
+0x018: 0a00000000000000     | 	.quad	0x00a
+0x020: b000000000000000     | 	.quad	0x0b0
+0x028: 000c000000000000     | 	.quad	0xc00
+                            | 
+0x030:                      | dest:
+0x030: 1101000000000000     | 	.quad	0x111
+0x038: 2202000000000000     | 	.quad	0x222
+0x040: 3303000000000000     | 	.quad	0x333
+                            | 
+0x048:                      | main:
+0x048: a03f                 | 	pushq	%rbx
+0x04a: 30f71800000000000000 | 	irmovq	stc, %rdi
+0x054: 30f63000000000000000 | 	irmovq	dest, %rsi
+0x05e: 30f20300000000000000 | 	irmovq	0x03, %rdx
+0x068: 807400000000000000   | 	call	copy_block
+0x071: b03f                 | 	popq	%rbx
+0x073: 90                   | 	ret
+                            | 
+0x074:                      | copy_block:
+0x074: 30f00000000000000000 | 	irmovq	0x00, %rax
+0x07e: 708700000000000000   | 	jmp	loop
+                            | 
+0x087:                      | loop:
+0x087: 30f80100000000000000 | 	irmovq	0x01, %r8
+0x091: 30fb0800000000000000 | 	irmovq	0x08, %r11
+0x09b: 50970000000000000000 | 	mrmovq	(%rdi), %r9
+0x0a5: 60b7                 | 	addq	%r11, %rdi
+0x0a7: 209e                 | 	rrmovq	%r9, %r14
+0x0a9: 50a60000000000000000 | 	mrmovq	(%rsi), %r10
+0x0b3: 60b6                 | 	addq	%r11, %rsi
+0x0b5: 20ea                 | 	rrmovq	%r14, %r10
+0x0b7: 6390                 | 	xorq	%r9, %rax
+0x0b9: 6182                 | 	subq	%r8, %rdx
+0x0bb: 768700000000000000   | 	jg	loop
+0x0c4: 90                   | 	ret
+                            | 
+                            | 
+                            | 
+0x200:                      | .pos	0x200
+0x200:                      | stack:

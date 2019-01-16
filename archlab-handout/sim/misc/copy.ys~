@@ -1,0 +1,48 @@
+#Ellie Van De Graaff, ellievdg
+.pos 0
+irmovq stack, %rsp
+call main
+halt
+
+.align 8
+stc:
+	.quad	0x00a
+	.quad	0x0b0
+	.quad	0xc00
+
+dest:
+	.quad	0x111
+	.quad	0x222
+	.quad	0x333
+
+main:
+	pushq	%rbx
+	irmovq	stc, %rdi
+	irmovq	dest, %rsi
+	irmovq	0x03, %rdx
+	call	copy_block
+	popq	%rbx
+	ret
+
+copy_block:
+	irmovq	0x00, %rax
+	jmp	loop
+
+loop:
+	irmovq	0x01, %r8
+	irmovq	0x08, %r11
+	mrmovq	(%rdi), %r9
+	addq	%r11, %r9
+	rrmovq	%r9, %r14
+	mrmovq	(%rsi), %r10
+	addq	%r11, %r10
+	rrmovq	%r14, %r10
+	xorq	%r14, %rax
+	subq	%r8, %rdx
+	jg	loop
+	ret
+
+
+
+.pos	0x200
+stack:

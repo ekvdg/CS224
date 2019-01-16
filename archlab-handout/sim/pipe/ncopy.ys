@@ -1,0 +1,103 @@
+#/* $begin ncopy-ys */
+##################################################################
+# ncopy.ys - Copy a src block of len words to dst.
+# Return the number of positive words (>0) contained in src.
+#
+# Include your name and ID here.
+#
+# Describe how and why you modified the baseline code.
+#
+##################################################################
+# Do not modify this portion
+# Function prologue.
+# %rdi = src, %rsi = dst, %rdx = len
+ncopy:
+
+##################################################################
+# You can modify this portion
+	# Loop header
+	
+	rrmovq %rdx, %rcx
+	xorq %rax,%rax		# count = 0;
+	iaddq  $-6, %rcx
+	jle    anding
+			 
+
+Loop:
+	mrmovq	(%rdi), %r9
+	mrmovq	8(%rdi), %r10
+	mrmovq	16(%rdi), %r11
+	mrmovq	24(%rdi), %r12
+	mrmovq	32(%rdi), %r13
+	mrmovq	40(%rdi), %r14
+	rmmovq	%r9, (%rsi)
+	rmmovq  %r10, 8(%rsi)
+	rmmovq	%r11, 16(%rsi)
+	rmmovq	%r12, 24(%rsi)
+	rmmovq	%r13, 32(%rsi)
+	rmmovq	%r14, 40(%rsi)
+	
+ele1:
+	andq	%r9, %r9
+	jle	ele2
+	iaddq	$1, %rax
+
+ele2:
+	andq	%r10, %r10
+	jle 	ele3
+	iaddq	$1, %rax
+
+ele3:
+	andq	%r11, %r11
+	jle 	ele4
+	iaddq	$1, %rax
+
+ele4:
+	andq	%r12, %r12
+	jle	ele5
+	iaddq	$1, %rax
+
+ele5:
+	andq	%r13, %r13
+	jle	ele6
+	iaddq	$1, %rax
+
+ele6:
+	andq	%r14, %r14
+	jle	Npos
+	iaddq	$1, %rax
+	
+Npos:
+	iaddq  $48, %rdi
+	iaddq  $48, %rsi
+	iaddq  $-6, %rcx
+	jge    Loop
+	rrmovq %rcx, %rdx
+	iaddq  $6, %rdx
+	
+anding:
+	andq	%rdx, %rdx
+	jle	Done
+
+loop2:
+	mrmovq	(%rdi), %r10
+	iaddq	$8, %rdi
+	rmmovq	%r10, (%rsi)
+	andq	%r10, %r10
+	jle	Npos1
+	iaddq	$1, %rax
+
+Npos1:
+	iaddq	$8, %rsi
+	iaddq	$-1, %rdx
+	jg	loop2
+
+##################################################################
+# Do not modify the following section of code
+# Function epilogue.
+Done:
+	ret
+##################################################################
+# Keep the following label at the end of your function
+End:
+#/* $end ncopy-ys */
